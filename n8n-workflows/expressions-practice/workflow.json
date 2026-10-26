@@ -1,0 +1,125 @@
+{
+  "name": "Expression",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9d62adab-c1ad-4867-aea4-05b077c5dece",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { name: \"  likith kumar \", phone: \"9876543210\", budget: 25000, course: \"UPSC\" } },\n  { json: { name: \"ravi teja\", phone: \"9123456789\", budget: 12000, course: \"Group 1\" } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e1e61e35-6610-4fc7-9c69-23dcfb190a03",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "62c2bf2d-c26b-48f8-9457-af472e09ce3f",
+              "name": "clean_name",
+              "value": "={{ $json.name.trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "65151aad-8aca-47dc-a72d-0d4bd2310628",
+              "name": "first_name",
+              "value": "={{ $json.name.trim().split(' ')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "f8de4e66-f60e-4d9e-ae0b-9ce50fa83fe6",
+              "name": "name_caps",
+              "value": "={{ $json.name.trim().toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "8d5351ff-5a72-4230-babc-21ae99634f37",
+              "name": "submitted_on",
+              "value": "={{ $now.toFormat('dd LLL yyyy, hh:mm a') }}",
+              "type": "string"
+            },
+            {
+              "id": "dc5d24d2-ab2b-4b7e-8354-509c9de220c4",
+              "name": "follow_up_on",
+              "value": "={{ $now.plus({ days: 2 }).toFormat('dd LLL yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "0654f8c7-c0ee-46c0-a56f-3509fdaf149a",
+              "name": "priority",
+              "value": "={{ $json.budget >= 20000 ? 'Hot' : 'Cold' }}",
+              "type": "string"
+            },
+            {
+              "id": "4b4e4fd4-6c8e-46e7-93c8-35ccb3ff3e5e",
+              "name": "message",
+              "value": "={{ 'Hi ' + $json.name.trim().split(' ')[0] + ', thanks for your interest in ' + $json.course + '. We will call you on ' + $now.plus({ days: 1 }).toFormat('dd LLL') + '.' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        416,
+        16
+      ],
+      "id": "e85599df-ec09-460c-a9e9-e099616b4190",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "84bd4533-d7d8-4d27-ac2d-872a8f3987fb",
+  "meta": {},
+  "nodeGroups": [],
+  "id": "S5HKN0ll4PLdOVMx",
+  "tags": []
+}
