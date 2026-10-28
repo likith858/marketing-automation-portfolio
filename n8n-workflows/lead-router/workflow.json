@@ -1,0 +1,129 @@
+{
+  "name": "Lead-Router",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f615df15-d788-4f63-9b18-d396ffe14fe9",
+      "name": "Start (Manual Trigger)"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { name: \"Ravi Kumar\",   phone: \"9000000131\", course: \"UPSC Foundation\" } },\n  { json: { name: \"Priya Sharma\", phone: \"\",           course: \"Mains Answer Writing\" } },\n  { json: { name: \"Arjun Reddy\",  phone: \"9000000132\", course: \"Mains Answer Writing\" } },\n  { json: { name: \"Sneha Patel\",  phone: \"9000000133\", course: \"Test Series\" } },\n  { json: { name: \"Kiran Rao\",    phone: \"9000000134\", course: \"Optional Coaching\" } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "4afe4c4a-c9f5-43a1-b470-288ba384f801",
+      "name": "Test leads (Code)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "1ef83b8e-0f9c-4dec-b318-09147d155ee2",
+              "leftValue": "={{ $json.phone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        400,
+        0
+      ],
+      "id": "4972988d-63b2-4a61-ad31-537c2d413d05",
+      "name": "Has phone? (IF)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7b6f34fd-8b45-416d-977c-62b1f9f5e36d",
+              "name": "status",
+              "value": "Rejected: no phone",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        624,
+        96
+      ],
+      "id": "c4122512-5f09-4bcd-8304-4a7a0645368e",
+      "name": "Mark rejected: no phone"
+    }
+  ],
+  "connections": {
+    "Start (Manual Trigger)": {
+      "main": [
+        [
+          {
+            "node": "Test leads (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test leads (Code)": {
+      "main": [
+        [
+          {
+            "node": "Has phone? (IF)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has phone? (IF)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Mark rejected: no phone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
