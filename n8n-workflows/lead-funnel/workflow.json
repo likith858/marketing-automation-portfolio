@@ -3,6 +3,145 @@
   "nodes": [
     {
       "parameters": {
+        "formTitle": "Free 1:1 Answer Review",
+        "formDescription": "Get one Mains answer checked by a mentor, free.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "placeholder": "Your full name"
+            },
+            {
+              "fieldLabel": "Phone",
+              "placeholder": "10-digit mobile number"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "your@gmail.com"
+            },
+            {
+              "fieldLabel": "Course",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "UPSC Foundation"
+                  },
+                  {
+                    "option": "Mains Answer Writing"
+                  },
+                  {
+                    "option": "Test Series"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "4da21111-db70-44f8-abcc-11cf25b09af5",
+      "name": "On form submission"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\n\n// keep only digits: \"+91 98765-43210\" -> \"919876543210\"\nlet phone = String(d.Phone || '').replace(/\\D/g, '');\n\n// remove India code 91 if they added it\nif (phone.length === 12 && phone.startsWith('91')) {\n  phone = phone.slice(2);\n}\n\nreturn {\n  json: {\n    Name: String(d.Name || '').trim(),\n    Phone: phone,\n    Email: String(d.Email || '').trim().toLowerCase(),\n    Course: d.Course\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a86440ef-ada4-4f4e-85f0-1166777514d8",
+      "name": "clean data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "6b11c581-c7d1-46da-8ea6-3c561ae902e6",
+              "leftValue": "={{ $json.Phone.length }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "07d081d1-e03e-47d5-aa03-4fa9e123fa3b",
+      "name": "check phone"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "8d106e5b-5d12-4af5-87b3-e3f79d0e8a3d",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": ".",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "1397018c-ede4-44e1-9c36-8e3800885d2f",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        672,
+        -64
+      ],
+      "id": "c86c7253-dd22-4964-af58-474b51e60140",
+      "name": "check email"
+    },
+    {
+      "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
@@ -21,9 +160,9 @@
             "phone": "={{ $json.Phone }}",
             "course": "={{ $json.Course }}",
             "status": "new",
-            "next_step": "WhatsApp within 1 hour",
-            "created_at": "={{ $now.toFormat('dd MMM yyyy, HH:mm') }}",
-            "Email": "={{ $json.Email }}"
+            "Email": "={{ $json.Email }}",
+            "next_step": "WhatsApp within 1hr",
+            "created_at": "={{ $now.setZone('Asia/Kolkata').toFormat('dd MMM yyyy, HH:mm') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -116,60 +255,45 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        720,
-        -112
+        944,
+        -128
       ],
       "id": "326cb44e-6ae9-47b8-a6c4-8b73fd6f10d0",
-      "name": "Save lead (Google Sheets)"
+      "name": "Save Lead"
     },
     {
       "parameters": {
-        "formTitle": "Free 1:1 Answer Review",
-        "formDescription": "Get one Mains answer checked by a mentor, free.",
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Name",
-              "placeholder": "Your full name"
-            },
-            {
-              "fieldLabel": "Phone",
-              "placeholder": "10-digit mobile number"
-            },
-            {
-              "fieldLabel": "Email",
-              "fieldType": "email",
-              "placeholder": "your@gmail.com"
-            },
-            {
-              "fieldLabel": "Course",
-              "fieldType": "dropdown",
-              "fieldOptions": {
-                "values": [
-                  {
-                    "option": "UPSC Foundation"
-                  },
-                  {
-                    "option": "Mains Answer Writing"
-                  },
-                  {
-                    "option": "Test Series"
-                  }
-                ]
-              }
-            }
-          ]
-        },
+        "operation": "completion",
+        "completionTitle": "Thank you!",
+        "completionMessage": "We've got your details. A mentor will WhatsApp you within 1 hour to fix your review slot.",
         "options": {}
       },
-      "type": "n8n-nodes-base.formTrigger",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
       "position": [
-        -96,
-        0
+        1168,
+        -128
       ],
-      "id": "4da21111-db70-44f8-abcc-11cf25b09af5",
-      "name": "On form submission"
+      "id": "f0f9b0a4-2742-4d01-835e-fa649f9d32ff",
+      "name": "thank you page"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('clean data').item.json.Email }}",
+        "subject": "Your free answer review is booked",
+        "message": "=<p>Hi {{ $('clean data').item.json.Name }},</p>  <p>Thank you for booking your <b>free 1:1 Mains answer review</b>.</p>  <p><b>What happens next:</b></p> <ol>   <li>A mentor will WhatsApp you on <b>{{ $('clean data').item.json.Phone }}</b> within 1 hour to fix your review slot.</li>   <li>Keep one Mains answer ready (a photo or scan is fine).</li>   <li>In a 10-minute call, the mentor will show you exactly where you lost marks and how to fix it.</li> </ol>  <p>Course you chose: <b>{{ $('clean data').item.json.Course }}</b></p>  <p>See you soon,<br>The Mentor Team</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        -128
+      ],
+      "id": "fee48eac-f883-4ca8-a3fc-41e431d71a6d",
+      "name": "welcome email"
     },
     {
       "parameters": {
@@ -181,153 +305,104 @@
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.5,
       "position": [
-        480,
+        672,
         64
       ],
       "id": "55c732e5-0ede-4e91-b4fc-3310dc52d024",
-      "name": "Phone error page"
+      "name": "phone error page"
     },
     {
       "parameters": {
         "operation": "completion",
-        "completionTitle": "check your email address ",
-        "completionMessage": "your email should look like name@gmail.com. Please go back and try again.",
+        "completionTitle": "Please check your email address",
+        "completionMessage": "Your email should look like name@gmail.com. Please go back and try again.",
         "options": {}
       },
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.5,
       "position": [
-        736,
-        48
+        944,
+        32
       ],
       "id": "08875076-be08-4204-bc03-1c9f016b73fb",
-      "name": "Email error page"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 4
-          },
-          "conditions": [
-            {
-              "id": "6b11c581-c7d1-46da-8ea6-3c561ae902e6",
-              "leftValue": "={{ $json.Phone.length }}",
-              "rightValue": 10,
-              "operator": {
-                "type": "number",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {
-          "ignoreCase": false
-        }
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.4,
-      "position": [
-        224,
-        0
-      ],
-      "id": "07d081d1-e03e-47d5-aa03-4fa9e123fa3b",
-      "name": "Check phone (IF)"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 4
-          },
-          "conditions": [
-            {
-              "id": "8d106e5b-5d12-4af5-87b3-e3f79d0e8a3d",
-              "leftValue": "={{ $('On form submission').item.json.Email }}",
-              "rightValue": ".",
-              "operator": {
-                "type": "string",
-                "operation": "contains"
-              }
-            },
-            {
-              "id": "1397018c-ede4-44e1-9c36-8e3800885d2f",
-              "leftValue": "={{ $('On form submission').item.json.Email }}",
-              "rightValue": "@",
-              "operator": {
-                "type": "string",
-                "operation": "contains"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.4,
-      "position": [
-        448,
-        -64
-      ],
-      "id": "c86c7253-dd22-4964-af58-474b51e60140",
-      "name": "Check email (IF)"
+      "name": "email error page"
     }
   ],
   "connections": {
-    "Save lead (Google Sheets)": {
-      "main": [
-        []
-      ]
-    },
     "On form submission": {
       "main": [
         [
           {
-            "node": "Check phone (IF)",
+            "node": "clean data",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Check phone (IF)": {
+    "Save Lead": {
       "main": [
         [
           {
-            "node": "Check email (IF)",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Phone error page",
+            "node": "thank you page",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Check email (IF)": {
+    "check phone": {
       "main": [
         [
           {
-            "node": "Save lead (Google Sheets)",
+            "node": "check email",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Email error page",
+            "node": "phone error page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check email": {
+      "main": [
+        [
+          {
+            "node": "Save Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "email error page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "thank you page": {
+      "main": [
+        [
+          {
+            "node": "welcome email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "clean data": {
+      "main": [
+        [
+          {
+            "node": "check phone",
             "type": "main",
             "index": 0
           }
@@ -337,7 +412,8 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timezone": "Asia/Kolkata"
   },
   "nodeGroups": [],
   "tags": []
