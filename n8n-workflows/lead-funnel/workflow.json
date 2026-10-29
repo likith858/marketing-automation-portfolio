@@ -1,0 +1,344 @@
+{
+  "name": "Lead-Funnel",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.Name }}",
+            "phone": "={{ $json.Phone }}",
+            "course": "={{ $json.Course }}",
+            "status": "new",
+            "next_step": "WhatsApp within 1 hour",
+            "created_at": "={{ $now.toFormat('dd MMM yyyy, HH:mm') }}",
+            "Email": "={{ $json.Email }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "course",
+              "displayName": "course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "next_step",
+              "displayName": "next_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        -112
+      ],
+      "id": "326cb44e-6ae9-47b8-a6c4-8b73fd6f10d0",
+      "name": "Save lead (Google Sheets)"
+    },
+    {
+      "parameters": {
+        "formTitle": "Free 1:1 Answer Review",
+        "formDescription": "Get one Mains answer checked by a mentor, free.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "placeholder": "Your full name"
+            },
+            {
+              "fieldLabel": "Phone",
+              "placeholder": "10-digit mobile number"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "your@gmail.com"
+            },
+            {
+              "fieldLabel": "Course",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "UPSC Foundation"
+                  },
+                  {
+                    "option": "Mains Answer Writing"
+                  },
+                  {
+                    "option": "Test Series"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "4da21111-db70-44f8-abcc-11cf25b09af5",
+      "name": "On form submission"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Please check your phone number",
+        "completionMessage": "Your phone number should have 10 digits",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        480,
+        64
+      ],
+      "id": "55c732e5-0ede-4e91-b4fc-3310dc52d024",
+      "name": "Phone error page"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "check your email address ",
+        "completionMessage": "your email should look like name@gmail.com. Please go back and try again.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        736,
+        48
+      ],
+      "id": "08875076-be08-4204-bc03-1c9f016b73fb",
+      "name": "Email error page"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "6b11c581-c7d1-46da-8ea6-3c561ae902e6",
+              "leftValue": "={{ $json.Phone.length }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "07d081d1-e03e-47d5-aa03-4fa9e123fa3b",
+      "name": "Check phone (IF)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "8d106e5b-5d12-4af5-87b3-e3f79d0e8a3d",
+              "leftValue": "={{ $('On form submission').item.json.Email }}",
+              "rightValue": ".",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "1397018c-ede4-44e1-9c36-8e3800885d2f",
+              "leftValue": "={{ $('On form submission').item.json.Email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        -64
+      ],
+      "id": "c86c7253-dd22-4964-af58-474b51e60140",
+      "name": "Check email (IF)"
+    }
+  ],
+  "connections": {
+    "Save lead (Google Sheets)": {
+      "main": [
+        []
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Check phone (IF)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check phone (IF)": {
+      "main": [
+        [
+          {
+            "node": "Check email (IF)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Phone error page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check email (IF)": {
+      "main": [
+        [
+          {
+            "node": "Save lead (Google Sheets)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email error page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
