@@ -13,6 +13,8 @@
 9. **Proof & CTA:** button microcopy and objection-busting proof lines
 10. **Follow-up sequence:** WhatsApp + email lead nurture with stop rules
 
+[`funnel-maps.md`](funnel-maps.md): **8-stage funnels** for 3 local businesses, plus simulated funnel math, the biggest leak and the fix
+
 **Notes**
 - Business names ("Sample IAS Academy", "Sample Fitness Studio", "IronStart Fitness") are sample names.
 - Anything in [brackets] is a placeholder to confirm with a real client.
