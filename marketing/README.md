@@ -15,6 +15,8 @@
 
 [`funnel-maps.md`](funnel-maps.md): **8-stage funnels** for 3 local businesses, plus simulated funnel math, the biggest leak and the fix
 
+[`landing-page-v1.md`](landing-page-v1.md): **live landing page** for a free answer-review offer (page plan, copy, headline A/B options), connected to the n8n lead funnel
+
 **Notes**
 - Business names ("Sample IAS Academy", "Sample Fitness Studio", "IronStart Fitness") are sample names.
 - Anything in [brackets] is a placeholder to confirm with a real client.
